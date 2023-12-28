@@ -29,9 +29,7 @@ export async function POST(req: Request) {
       return new NextResponse("All values should be non-zero", { status: 400 });
     }
 
-    if (!API_KEY) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+
 
     const createOrder = await prismadb.createOrder.create({
       data: {
