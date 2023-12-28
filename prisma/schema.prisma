@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model CreateOrder {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  ArtistName       String
+  Song             String[]
+  Follower         Int
+  PlaysValue       Int
+  MonthlyListeners Int
+  Saves            Int
+  Email            String
+  price            Float
+  order            Order[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Order {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  isPaid        Boolean     @default(false)
+  isDelivered    Boolean    @default(false)
+  phone         String      @default("")
+  address       String      @default("")
+  name          String      @default("")
+  email         String      @default("")
+  createOrder   CreateOrder @relation(fields: [createOrderId], references: [id])
+  createOrderId String      @db.ObjectId
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
