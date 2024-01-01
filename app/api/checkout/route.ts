@@ -71,9 +71,7 @@ const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 export async function GET(req: Request) {
   try {
     const userApikey = req.headers.get("x-api-key");
-    if (!userApikey || userApikey !== API_KEY) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+
     const Orders = await prismadb.order.findMany({
       orderBy: {
         createdAt: "desc",

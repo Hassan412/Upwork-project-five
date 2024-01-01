@@ -2,7 +2,7 @@ import prismadb from "@/lib/prismadb";
 import { NextResponse } from "next/server";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "services-dashboard.vercel.app",
+  "Access-Control-Allow-Origin": "https://services-dashboard.vercel.app",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key",
 };

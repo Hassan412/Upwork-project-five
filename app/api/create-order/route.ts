@@ -26,9 +26,7 @@ export async function POST(req: Request) {
       return new NextResponse("All values should be non-zero", { status: 400 });
     }
 
-    if (!API_KEY) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+
 
     const createOrder = await prismadb.createOrder.create({
       data: {
@@ -57,9 +55,6 @@ export async function GET(req: Request) {
   try {
     const userApikey = req.headers.get("x-api-key");
 
-    if (!userApikey || userApikey !== API_KEY) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
     const Orders = await prismadb.createOrder.findMany();
 
     return NextResponse.json(Orders);
