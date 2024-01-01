@@ -14,10 +14,7 @@ export async function POST(req: Request) {
       ArtistName,
       Email,
       checkedSongs,
-      API_KEY,
-
-
-    } = body;
+      API_KEY,} = body;
 
     if (
       OrderTotal === 0 ||
