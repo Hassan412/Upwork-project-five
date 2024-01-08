@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model CreateOrder {
+model SpotifyOrder {
   id               String   @id @default(auto()) @map("_id") @db.ObjectId
   ArtistName       String
   Song             String[]
@@ -25,16 +25,85 @@ model CreateOrder {
   updatedAt        DateTime @updatedAt
 }
 
+model TwitchOrder {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  StreamerName String
+  LiveViews    Int      @default(0)
+  ViewDuration Int      @default(0)
+  Followers    Int      @default(0)
+  VideoViews   Int      @default(0)
+  Videos       String[]
+  Price        Float
+  Email        String
+  order        Order[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model TiktokOrder {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  CreaterName String
+  Likes       Int      @default(0)
+  Followers   Int      @default(0)
+  Views       Int      @default(0)
+  Shares      Int      @default(0)
+  Comments    Int      @default(0)
+  Posts       String[]
+  Price       Float
+  Email       String
+  order       Order[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model InstagramOrder {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  UserName  String
+  Likes     Int      @default(0)
+  Followers Int      @default(0)
+  Views     Int      @default(0)
+  Comments  Int      @default(0)
+  Posts     String[]
+  Price     Float
+  Email     String
+  order     Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TwitterOrder {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  UserName  String
+  Likes     Int      @default(0)
+  Followers Int      @default(0)
+  Views     Int      @default(0)
+  Comments  Int      @default(0)
+  Retweets  Int      @default(0)
+  Posts     String[]
+  Price     Float
+  Email     String
+  order     Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Order {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  isPaid        Boolean     @default(false)
-  isDelivered    Boolean    @default(false)
-  phone         String      @default("")
-  address       String      @default("")
-  name          String      @default("")
-  email         String      @default("")
-  createOrder   CreateOrder @relation(fields: [createOrderId], references: [id])
-  createOrderId String      @db.ObjectId
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id               String          @id @default(auto()) @map("_id") @db.ObjectId
+  OrderType        String
+  isPaid           Boolean         @default(false)
+  isDelivered      Boolean         @default(false)
+  name             String          @default("")
+  email            String          @default("")
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  TiktokOrder      TiktokOrder?    @relation(fields: [tiktokOrderId], references: [id])
+  tiktokOrderId    String?         @db.ObjectId
+  TwitchOrder      TwitchOrder?    @relation(fields: [twitchOrderId], references: [id])
+  twitchOrderId    String?         @db.ObjectId
+  SpotifyOrder     SpotifyOrder?   @relation(fields: [spotifyOrderId], references: [id])
+  spotifyOrderId   String?         @db.ObjectId
+  InstagramOrder   InstagramOrder? @relation(fields: [instagramOrderId], references: [id])
+  instagramOrderId String?         @db.ObjectId
+  TwitterOrder     TwitterOrder?   @relation(fields: [twitterOrderId], references: [id])
+  twitterOrderId   String?         @db.ObjectId
 }

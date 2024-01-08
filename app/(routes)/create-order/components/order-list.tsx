@@ -112,7 +112,7 @@ const OrderList: React.FC<OrderListProps> = ({
     e.preventDefault();
     setIsLoading(true)
     try {
-      const createOrderResponse =  await axios.post("/api/create-order", {
+      const createOrderResponse =  await axios.post("/api/spotify-order", {
         OrderTotal,
         PlayValue,
         SaveValue,
@@ -121,13 +121,15 @@ const OrderList: React.FC<OrderListProps> = ({
         ArtistName,
         Email,
         checkedSongs,
-        API_KEY
+        API_KEY,
+
       });
       const OrderId = createOrderResponse?.data?.id
-     const response = await axios.post("/api/checkout", {
+     const response = await axios.post("http://localhost:3001/api/checkout", {
         OrderTotal,
         API_KEY,
-        OrderId
+        OrderId,
+        ServiceName: "Spotify service"
       })
 
       window.location = response.data?.url;

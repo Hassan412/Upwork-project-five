@@ -1,11 +1,8 @@
-import Stripe from "stripe";
 import { NextResponse } from "next/server";
-import limitDecimalPlaces from "@/actions/limit-number-decimal";
-import { stripe } from "@/lib/stripe";
 import prismadb from "@/lib/prismadb";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "http://localhost:3001",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key",
 };
@@ -21,49 +18,27 @@ export async function OPTIONS() {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { OrderTotal, API_KEY, OrderId } = body;
+  const { API_KEY, OrderId, ServiceName } = body;
 
   if (!API_KEY) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
-
-  const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [
-    {
-      price_data: {
-        currency: "USD",
-        product_data: {
-          name: "Spotify services",
-        },
-        unit_amount_decimal: `${limitDecimalPlaces(OrderTotal * 100, 2)}`,
-      },
-      quantity: 1,
-    },
-  ];
   const order = await prismadb.order.create({
     data: {
       isPaid: false,
-      createOrderId: OrderId,
-    },
-  });
-  const session = await stripe.checkout.sessions.create({
-    line_items,
-    mode: "payment",
-    billing_address_collection: "required",
-    phone_number_collection: {
-      enabled: true,
-    },
-    success_url: `${process.env.FRONTEND_URL}?success=1`,
-    cancel_url: `${process.env.FRONTEND_URL}?canceled=1`,
-    metadata: {
-      orderId: order.id,
+      spotifyOrderId: OrderId,
+      OrderType: ServiceName
     },
   });
 
+
   return NextResponse.json(
-    { url: session.url },
+    {
+      order
+    },
     {
       headers: corsHeaders,
-    }
+    },
   );
 }
 

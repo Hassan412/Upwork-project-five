@@ -14,8 +14,11 @@ export async function POST(req: Request) {
       ArtistName,
       Email,
       checkedSongs,
-      API_KEY,} = body;
-
+      API_KEY,
+    } = body;
+    if (!API_KEY) {
+      return new NextResponse("unauthorized", { status: 401 });
+    }
     if (
       OrderTotal === 0 ||
       SaveValue === 0 ||
@@ -26,9 +29,7 @@ export async function POST(req: Request) {
       return new NextResponse("All values should be non-zero", { status: 400 });
     }
 
-
-
-    const createOrder = await prismadb.createOrder.create({
+    const createOrder = await prismadb.spotifyOrder.create({
       data: {
         PlaysValue: PlayValue,
         Saves: SaveValue,
@@ -41,7 +42,6 @@ export async function POST(req: Request) {
       },
     });
 
-   
     return NextResponse.json(createOrder);
   } catch (error) {
     console.error("Error processing order:", error);
@@ -54,8 +54,10 @@ const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 export async function GET(req: Request) {
   try {
     const userApikey = req.headers.get("x-api-key");
-
-    const Orders = await prismadb.createOrder.findMany();
+    if (!userApikey || userApikey !== API_KEY) {
+      return new NextResponse("unauthorized", { status: 401 });
+    }
+    const Orders = await prismadb.spotifyOrder.findMany();
 
     return NextResponse.json(Orders);
   } catch (error) {
